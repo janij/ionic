@@ -4,7 +4,7 @@ var fs = require('fs');
 var DISCOURSE_FILE = __dirname + '/DISCOURSE_POST_URL';
 
 module.exports = {
-  dist: 'dist',
+  dist: '../app/ionic/dist',
   releasePostUrl: fs.readFileSync(DISCOURSE_FILE).toString(),
   releasePostFile: DISCOURSE_FILE,
 
