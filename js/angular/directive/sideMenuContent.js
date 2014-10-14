@@ -141,6 +141,8 @@ function($timeout, $ionicGesture, $window) {
             $element[0].style[ionic.CSS.TRANSFORM] = 'translate3d(' + xTransform + 'px,0,0)';
             $timeout(function() {
               $scope.sideMenuContentTranslateX = amount;
+                if (amount == 0)
+                  $scope.sideMenuIsClosed();
             });
           }),
           setMarginLeft: ionic.animationFrameThrottle(function(amount) {

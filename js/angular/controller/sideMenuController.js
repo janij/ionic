@@ -1,16 +1,21 @@
 IonicModule
 .controller('$ionicSideMenus', [
+  '$rootScope',
+  '$element',
   '$scope',
   '$attrs',
   '$ionicSideMenuDelegate',
   '$ionicPlatform',
   '$ionicBody',
-function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody) {
+function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody) {
   var self = this;
   var rightShowing, leftShowing, isDragging;
   var startX, lastX, offsetX, isAsideExposed;
 
   self.$scope = $scope;
+
+  var menuElem = $element.find("ion-side-menu");
+  var viewElem = $element.find("ion-nav-view");
 
   self.initialize = function(options) {
     self.left = options.left;
@@ -137,6 +142,11 @@ function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody) {
     // add the CSS class "menu-open" if the percentage does not
     // equal 0, otherwise remove the class from the body element
     $ionicBody.enableClass( (percentage !== 0), 'menu-open');
+    $scope.isSideMenuOpen = (percentage !== 0);
+    if (percentage !== 0) {
+        menuElem.removeClass('camera-open-menu');
+        viewElem.removeClass('camera-open-bg');
+    }
   };
 
   /**
@@ -358,6 +368,11 @@ function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody) {
 
   $scope.sideMenuContentTranslateX = 0;
 
+  $scope.sideMenuIsClosed = function() {
+    menuElem.addClass('camera-open-menu');
+    viewElem.addClass('camera-open-bg');
+  };
+
   var deregisterBackButtonAction = angular.noop;
   var closeSideMenu = angular.bind(self, self.close);
 
@@ -387,4 +402,8 @@ function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody) {
     right: { width: 275 }
   });
 
+    $rootScope.isSideMenuOpenFunc = function() {
+        console.log("ISSIDEMENUOPEN:" + self.getOpenAmount());
+        return self.getOpenAmount() !== 0;
+    };
 }]);
