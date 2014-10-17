@@ -24,6 +24,11 @@
 .invisible {
   visibility: hidden;
 }
+.translucent {
+  background-color: transparent;
+  background: none;
+  border-width: 0px;
+}
 
 .keyboard-open .hide-on-keyboard-open {
   display: none;

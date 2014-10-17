@@ -122,6 +122,7 @@ function($ionicViewService, $rootScope, $animate, $compile, $ionicNavBarConfig) 
         $scope.shouldAnimate = true;
         $scope.isReverse = false;
         $scope.isInvisible = true;
+        $scope.isTranslucent = false;
 
         $scope.$on('$destroy', function() {
           $scope.$parent.$hasHeader = false;
@@ -130,6 +131,7 @@ function($ionicViewService, $rootScope, $animate, $compile, $ionicNavBarConfig) 
         $scope.$watch(function() {
           return ($scope.isReverse ? ' reverse' : '') +
             ($scope.isInvisible ? ' invisible' : '') +
+            ($scope.isTranslucent ? ' translucent' : '') +
             (!$scope.shouldAnimate ? ' no-animation' : '');
         }, function(className, oldClassName) {
           $element.removeClass(oldClassName);

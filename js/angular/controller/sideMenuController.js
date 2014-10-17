@@ -92,7 +92,22 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
     self.openPercentage(0);
   };
 
-  /**
+    self.closeToUnity = function(value) {
+        $rootScope.unityView = value;
+
+        if (value == true) {
+            //menuElem.addClass('isac-menu-animated');
+            viewElem.addClass('camera-open-bg');
+        }
+        else {
+            //viewElem.removeClass('camera-open-bg');
+            //menuElem.removeClass('isac-menu-animated');
+        }
+
+        self.openPercentage(0);
+    };
+
+    /**
    * @return {float} The amount the side menu is open, either positive or negative for left (positive), or right (negative)
    */
   self.getOpenAmount = function() {
@@ -144,8 +159,8 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
     $ionicBody.enableClass( (percentage !== 0), 'menu-open');
     $scope.isSideMenuOpen = (percentage !== 0);
     if (percentage !== 0) {
-        menuElem.removeClass('camera-open-menu');
-        viewElem.removeClass('camera-open-bg');
+        //menuElem.removeClass('camera-open-menu');
+       // viewElem.removeClass('camera-open-bg');
     }
   };
 
@@ -158,28 +173,52 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
     var maxLeft = self.left && self.left.width || 0;
     var maxRight = self.right && self.right.width || 0;
 
+    var isUnityView = $rootScope.unityView && $rootScope.unityView || false;
+
+//    console.log("UNITYVIEWOA:" + isUnityView+":"+maxLeft+":"+amount);
+
+//      console.log("TYPEOF:"+Boolean($rootScope.unityView));
+
+    if (!isUnityView) {
+        self.left && self.left.setContentWidth(maxLeft);
+    }
+
     // Check if we can move to that side, depending if the left/right panel is enabled
     if(!(self.left && self.left.isEnabled) && amount > 0) {
       self.content.setTranslateX(0);
+      self.right && self.right.setContentWidth(0);
       return;
     }
 
     if(!(self.right && self.right.isEnabled) && amount < 0) {
       self.content.setTranslateX(0);
+      if (isUnityView == true) {
+  //        console.log("CW ZERO 1");
+        self.left && self.left.setContentWidth(0);
+      }
       return;
     }
 
     if(leftShowing && amount > maxLeft) {
       self.content.setTranslateX(maxLeft);
+      self.left.setContentWidth(maxLeft);
       return;
     }
 
     if(rightShowing && amount < -maxRight) {
       self.content.setTranslateX(-maxRight);
+      self.right.setContentWidth(maxRight);
       return;
     }
 
     self.content.setTranslateX(amount);
+
+//      console.log("CW ZERO 2 : " + amount + ":" + isUnityView);
+    if (isUnityView == true) {
+//        console.log("CW ZERO 2.1 : " + amount + ":" + isUnityView);
+        self.left && self.left.setContentWidth(amount);
+    }
+   // self.right && self.right.setContentWidth(amount);
 
     if(amount >= 0) {
       leftShowing = true;
@@ -310,6 +349,8 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
       lastX = e.gesture.touches[0].pageX;
     }
 
+//    console.log("HANDLE DRAG:");
+
     // Calculate difference from the tap points
     if(!isDragging && Math.abs(lastX - startX) > self.dragThresholdX) {
       // if the difference is greater than threshold, start dragging using the current
@@ -320,6 +361,13 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
       // Initialize dragging
       self.content.disableAnimation();
       offsetX = self.getOpenAmount();
+
+  //      console.log("HANDLE DRAG INIT:");
+
+      menuElem.removeClass('isac-menu-animated');
+
+        //menuElem.removeClass('camera-open-menu');
+        //viewElem.removeClass('camera-open-bg');
     }
 
     if(isDragging) {
@@ -369,8 +417,12 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   $scope.sideMenuContentTranslateX = 0;
 
   $scope.sideMenuIsClosed = function() {
-    menuElem.addClass('camera-open-menu');
-    viewElem.addClass('camera-open-bg');
+//      console.log("SIDE MENU IS CLOSED");
+      if (!isDragging) {
+          menuElem.addClass('isac-menu-animated');
+          //menuElem.addClass('camera-open-menu');
+          viewElem.addClass('camera-open-bg');
+      }
   };
 
   var deregisterBackButtonAction = angular.noop;
@@ -403,7 +455,6 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   });
 
     $rootScope.isSideMenuOpenFunc = function() {
-        console.log("ISSIDEMENUOPEN:" + self.getOpenAmount());
-        return self.getOpenAmount() !== 0;
+        return self.getOpenAmount() !== 0 || isDragging;
     };
 }]);

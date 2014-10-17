@@ -16,13 +16,32 @@
  * ```
  */
 IonicModule
-.directive('menuClose', ['$ionicViewService', function($ionicViewService) {
+.directive('menuClose', ['$ionicViewService', '$rootScope', function($rootScope, $ionicViewService) {
   return {
     restrict: 'AC',
     require: '^ionSideMenus',
     link: function($scope, $element, $attr, sideMenuCtrl) {
       $element.bind('click', function(){
-        sideMenuCtrl.close();
+         var unityCamViewAttr = angular.isDefined($attr.unityCamView) ?
+              $attr.unityCamView :
+              'false';
+          var arCameraAttr = angular.isDefined($attr.arCamera) ?
+              $attr.arCamera :
+              'false';
+          if (arCameraAttr == "true") {
+              arCameraAttr = true;
+          } else {
+              arCameraAttr = false;
+          }
+          engine.trigger("ActivateARCamera", arCameraAttr);
+
+          if (unityCamViewAttr == "true") {
+              unityCamViewAttr = true;
+          } else {
+              unityCamViewAttr = false;
+          }
+          $rootScope.unityView = unityCamViewAttr;
+          sideMenuCtrl.closeToUnity(unityCamViewAttr);
       });
     }
   };

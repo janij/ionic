@@ -54,6 +54,14 @@ function($scope, $element, $attrs, $ionicViewService, $animate, $compile, $ionic
     return !$scope.isInvisible;
   };
 
+  this.translucentBar = function(show) {
+        if (arguments.length) {
+            $scope.isTranslucent = !show;
+            $scope.$parent.$hasHeader = !!show;
+        }
+        return !$scope.isTranslucent;
+  };
+
   this.setTitle = function(title) {
     if ($scope.title === title) {
       return;

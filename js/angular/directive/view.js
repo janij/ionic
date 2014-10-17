@@ -60,7 +60,7 @@ IonicModule
           });
         }
 
-        var hideBackAttr = angular.isDefined($attr.hideBackButton) ?
+          var hideBackAttr = angular.isDefined($attr.hideBackButton) ?
           $attr.hideBackButton :
           'false';
         $scope.$watch(hideBackAttr, function(value) {
@@ -75,6 +75,31 @@ IonicModule
           // Should the nav bar be hidden for this view or not?
           navBarCtrl.showBar(!value);
         });
+
+          var arCameraAttr = angular.isDefined($attr.arCamera) ?
+              $attr.arCamera :
+              'false';
+              $scope.$watch(arCameraAttr, function(value) {
+              engine.trigger("ActivateARCamera", value);
+          });
+
+          var unityViewAttr = angular.isDefined($attr.unityView) ?
+              $attr.unitView :
+              'false';
+          $scope.$watch(unityViewAttr, function(value) {
+              //$rootScope.unityView = value;
+              //console.log("SET UNITYVIEW:"+$rootScope.unityView +":"+value);
+          });
+
+          var translucentNavAttr = angular.isDefined($attr.translucentNavBar) ?
+              $attr.translucentNavBar :
+              'false';
+          $scope.$watch(translucentNavAttr, function(value) {
+              // Should the nav bar be translucent for this view or not?
+              navBarCtrl.translucentBar(!value);
+              //console.log("TRANSLu:"+value);
+              //$rootScope.unityView = value;
+          });
 
       };
     }

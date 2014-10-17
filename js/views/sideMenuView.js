@@ -17,8 +17,11 @@
     },
     setWidth: function(width) {
       this.width = width;
-      this.el.style.width = width + 'px';
+      this.el.style.width = 0 + 'px';
     },
+    setContentWidth: ionic.animationFrameThrottle(function(width) {
+        this.el.style.width = width + 'px';
+    }),
     setIsEnabled: function(isEnabled) {
       this.isEnabled = isEnabled;
     },
