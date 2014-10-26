@@ -75,14 +75,14 @@ IonicModule
           // Should the nav bar be hidden for this view or not?
           navBarCtrl.showBar(!value);
         });
-
+/*
           var arCameraAttr = angular.isDefined($attr.arCamera) ?
               $attr.arCamera :
               'false';
               $scope.$watch(arCameraAttr, function(value) {
               engine.trigger("ActivateARCamera", value);
           });
-
+*/
           var unityViewAttr = angular.isDefined($attr.unityView) ?
               $attr.unitView :
               'false';

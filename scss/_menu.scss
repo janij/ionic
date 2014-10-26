@@ -29,7 +29,8 @@
 
 .menu-content {
   @include transform(none);
-  box-shadow: $menu-side-shadow;
+//  box-shadow: $menu-side-shadow;
+  box-shadow: none;
 }
 
 .menu-open .menu-content .pane,
@@ -61,4 +62,8 @@
 
 .menu-animated {
   @include transition-transform($menu-animation-speed ease);
+}
+
+.side-menu-animated {
+  @include transition-transform($side-menu-animation-speed ease);
 }

@@ -83,7 +83,6 @@ IonicModule
         $scope.$on('$destroy', function(){
           $ionicBody.removeClass('menu-open', 'aside-open');
         });
-
       }
     }
   };

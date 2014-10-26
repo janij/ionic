@@ -61,6 +61,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
       shouldOpen = openAmount <= 0;
     }
     self.content.enableAnimation();
+    self.left && self.left.enableAnimation();
     if (!shouldOpen) {
       self.openPercentage(0);
     } else {
@@ -78,6 +79,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
       shouldOpen = openAmount >= 0;
     }
     self.content.enableAnimation();
+    self.left && self.left.enableAnimation();
     if (!shouldOpen) {
       self.openPercentage(0);
     } else {
@@ -180,43 +182,48 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
 //      console.log("TYPEOF:"+Boolean($rootScope.unityView));
 
     if (!isUnityView) {
-        self.left && self.left.setContentWidth(maxLeft);
+    //    self.left && self.left.setContentWidth(maxLeft);
     }
 
     // Check if we can move to that side, depending if the left/right panel is enabled
     if (!(self.left && self.left.isEnabled) && amount > 0) {
       self.content.setTranslateX(0);
-      self.right && self.right.setContentWidth(0);
+      self.right && self.right.setTranslateX(0);
+      //self.right && self.right.setContentWidth(0);
       return;
     }
 
     if (!(self.right && self.right.isEnabled) && amount < 0) {
       self.content.setTranslateX(0);
+      self.left && self.left.setTranslateX(0);
       if (isUnityView == true) {
   //        console.log("CW ZERO 1");
-        self.left && self.left.setContentWidth(0);
+//        self.left && self.left.setContentWidth(0);
       }
       return;
     }
 
     if (leftShowing && amount > maxLeft) {
       self.content.setTranslateX(maxLeft);
-      self.left.setContentWidth(maxLeft);
+      self.left && self.left.setTranslateX(maxLeft);
+//      self.left.setContentWidth(maxLeft);
       return;
     }
 
     if (rightShowing && amount < -maxRight) {
       self.content.setTranslateX(-maxRight);
-      self.right.setContentWidth(maxRight);
+      self.right && self.right.setTranslateX(-maxRight);
+//      self.right.setContentWidth(maxRight);
       return;
     }
 
     self.content.setTranslateX(amount);
+    self.left && self.left.setTranslateX(amount);
 
 //      console.log("CW ZERO 2 : " + amount + ":" + isUnityView);
     if (isUnityView == true) {
 //        console.log("CW ZERO 2.1 : " + amount + ":" + isUnityView);
-        self.left && self.left.setContentWidth(amount);
+    //    self.left && self.left.setContentWidth(amount);
     }
    // self.right && self.right.setContentWidth(amount);
 
@@ -251,6 +258,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   self.snapToRest = function(e) {
     // We want to animate at the end of this
     self.content.enableAnimation();
+    self.left && self.left.enableAnimation();
     isDragging = false;
 
     // Check how much the panel is open after the drag, and
@@ -362,6 +370,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
       isDragging = true;
       // Initialize dragging
       self.content.disableAnimation();
+      self.left && self.left.disableAnimation();
       offsetX = self.getOpenAmount();
 
   //      console.log("HANDLE DRAG INIT:");

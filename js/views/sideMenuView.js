@@ -8,6 +8,10 @@
    */
   ionic.views.SideMenu = ionic.views.View.inherit({
     initialize: function(opts) {
+        ionic.extend(this, {
+            animationClass: 'side-menu-animated'
+        }, opts);
+
       this.el = opts.el;
       this.isEnabled = (typeof opts.isEnabled === 'undefined') ? true : opts.isEnabled;
       this.setWidth(opts.width);
@@ -17,14 +21,24 @@
     },
     setWidth: function(width) {
       this.width = width;
-      this.el.style.width = 0 + 'px';
+      this.el.style.width = width + 'px';
     },
     setContentWidth: ionic.animationFrameThrottle(function(width) {
         this.el.style.width = width + 'px';
     }),
+    setTranslateX: ionic.animationFrameThrottle(function(x) {
+          console.log("TRANSLATE3D:" + x);
+          this.el.style[ionic.CSS.TRANSFORM] = 'translate3d(' + (x-80) + 'px, 0, 0)';
+      }),
     setIsEnabled: function(isEnabled) {
       this.isEnabled = isEnabled;
     },
+      disableAnimation: function() {
+          this.el.classList.remove(this.animationClass);
+      },
+      enableAnimation: function() {
+          this.el.classList.add(this.animationClass);
+      },
     bringUp: function() {
       if(this.el.style.zIndex !== '0') {
         this.el.style.zIndex = '0';

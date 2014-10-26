@@ -33,7 +33,12 @@ IonicModule
           } else {
               arCameraAttr = false;
           }
-          engine.trigger("ActivateARCamera", arCameraAttr);
+          var unityScreenAttr = angular.isDefined($attr.unityScreen) ?
+              $attr.unityScreen :
+              'no-unity';
+
+          engine.trigger("ActivateUnityScreen", unityScreenAttr);
+//          engine.trigger("ActivateARCamera", arCameraAttr);
 
           if (unityCamViewAttr == "true") {
               unityCamViewAttr = true;

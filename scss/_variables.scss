@@ -3,14 +3,14 @@
 // -------------------------------
 
 $light:                           #FEFEFE !default;
-$isaclight:                       #A25C58 !default;
+$isaclight:                       #723333 !default;
 $stable:                          #f8f8f8 !default;
 $positive:                        #4a87ee !default;
 $calm:                            #43cee6 !default;
-$balanced:                        #A25C58 !default;
+$balanced:                        #723333 !default;
 $energized:                       #f0b840 !default;
 $assertive:                       #ef4e3a !default;
-$royal:                           #8a6de9 !default;
+$royal:                           #A25C59 !default;
 $dark:                            #444 !default;
 
 
@@ -541,8 +541,9 @@ $range-default-track-bg:          #ccc !default;
 $menu-bg:                         #fff !default;
 $menu-width:                      275px !default;
 $menu-animation-speed:            200ms !default;
+$side-menu-animation-speed:       200ms !default;
 
-$menu-side-shadow:                -1px 0px 2px rgba(0, 0, 0, 0.2), 1px 0px 2px rgba(0,0,0,0.2) !default;
+$menu-side-shadow:                -1px 0px 9px rgba(0, 0, 0, 0.5), 1px 0px 2px rgba(0,0,0,0.5) !default;
 
 
 // Modals
