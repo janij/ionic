@@ -98,15 +98,6 @@ IonicModule
       tElement[0].removeAttribute('title');
       return function link($scope, $element, $attrs, viewCtrl) {
         viewCtrl.init();
-        var translucentNavAttr = angular.isDefined($attr.translucentNavBar) ?
-          $attr.translucentNavBar :
-          'false';
-        $scope.$watch(translucentNavAttr, function(value) {
-          // Should the nav bar be translucent for this view or not?
-          navBarCtrl.translucentBar(!value);
-          //console.log("TRANSLu:"+value);
-          //$rootScope.unityView = value;
-        });
       };
     }
   };

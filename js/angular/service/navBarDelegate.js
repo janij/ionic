@@ -56,6 +56,15 @@ IonicModule
   'showBar',
   /**
    * @ngdoc method
+   * @name $ionicNavBarDelegate#transparentBar
+   * @description
+   * Set/get whether the {@link ionic.directive:ionNavBar} is transparent or not.
+   * @param {boolean} show Whether to show the bar background.
+   * @returns {boolean} Whether the bar background is shown.
+   */
+    'transparentBar',
+  /**
+   * @ngdoc method
    * @name $ionicNavBarDelegate#title
    * @description
    * Set the title for the {@link ionic.directive:ionNavBar}.

@@ -261,7 +261,12 @@ IonicModule
   // iOS Transitions
   // -----------------------
   provider.transitions.views.ios = function(enteringEle, leavingEle, direction, shouldAnimate) {
+    //console.log("SHOUD JOO IOS: " + shouldAnimate + ":" + direction + ":" + enteringEle);
     shouldAnimate = shouldAnimate && (direction == 'forward' || direction == 'back');
+    //if (!shouldAnimate) {
+    //  direction = "forward";
+    //  shouldAnimate = true;
+    //}
 
     function setStyles(ele, opacity, x) {
       var css = {};
@@ -276,10 +281,12 @@ IonicModule
         if (direction == 'forward') {
           setStyles(enteringEle, 1, (1 - step) * 99); // starting at 98% prevents a flicker
           setStyles(leavingEle, (1 - 0.1 * step), step * -33);
+    //      setStyles(leavingEle, (0.5 - 0.1 * step), step * -33);
 
         } else if (direction == 'back') {
           setStyles(enteringEle, (1 - 0.1 * (1 - step)), (1 - step) * -33);
           setStyles(leavingEle, 1, step * 100);
+//          setStyles(leavingEle, 0.4, step * 100);
 
         } else {
           // swap, enter, exit
@@ -292,7 +299,9 @@ IonicModule
   };
 
   provider.transitions.navBar.ios = function(enteringHeaderBar, leavingHeaderBar, direction, shouldAnimate) {
+
     shouldAnimate = shouldAnimate && (direction == 'forward' || direction == 'back');
+    //shouldAnimate = false;
 
     function setStyles(ctrl, opacity, titleX, backTextX) {
       var css = {};
@@ -344,7 +353,11 @@ IonicModule
   // -----------------------
 
   provider.transitions.views.android = function(enteringEle, leavingEle, direction, shouldAnimate) {
+
+   // console.log("SHOUD JOO: " + shouldAnimate + ":" + direction + ":" + enteringEle);
+    //direction = "forward";
     shouldAnimate = shouldAnimate && (direction == 'forward' || direction == 'back');
+    //shouldAnimate = true;
 
     function setStyles(ele, opacity, y) {
       var css = {};

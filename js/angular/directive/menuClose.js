@@ -52,8 +52,8 @@ IonicModule
             unityCamViewAttr = false;
           }
 
-          $rootScope.unityView = unityCamViewAttr;
-          sideMenuCtrl.closeToUnity(unityCamViewAttr);
+          //$rootScope.unityView = unityCamViewAttr;
+          sideMenuCtrl.closeToUnity(unityCamViewAttr, $element);
         }
       });
     }

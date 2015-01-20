@@ -24,10 +24,14 @@
 .invisible {
   visibility: hidden;
 }
-.translucent {
-  background-color: transparent;
-  background: none;
-  border-width: 0px;
+.transparent {
+  background-color: transparent !important;
+  background: none !important;
+  border-width: 0px !important;
+}
+
+.leaving-view-fade {
+  opacity: 0.4 !important;
 }
 
 .keyboard-open .hide-on-keyboard-open {

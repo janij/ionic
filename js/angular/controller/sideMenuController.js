@@ -13,11 +13,17 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   var rightShowing, leftShowing, isDragging;
   var startX, lastX, offsetX, isAsideExposed;
   var enableMenuWithBackViews = true;
+  var prevMenuElement = null;
 
   self.$scope = $scope;
 
   var menuElem = $element.find("ion-side-menu");
   var viewElem = $element.find("ion-nav-view");
+
+  if (prevMenuElement == null)
+    prevMenuElement = $element.find("#first-item");
+
+  console.log("prevMenuElement:"+prevMenuElement);
 
   self.initialize = function(options) {
     self.left = options.left;
@@ -105,8 +111,14 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
     self.openPercentage(0);
   };
 
-    self.closeToUnity = function(value) {
+    self.closeToUnity = function(value, newElem) {
         $rootScope.unityView = value;
+
+        newElem.addClass('side-menu-item-selected');
+        if (prevMenuElement != null) {
+            prevMenuElement.removeClass('side-menu-item-selected');
+        }
+        prevMenuElement = newElem;
 
         if (value == true) {
             //menuElem.addClass('isac-menu-animated');

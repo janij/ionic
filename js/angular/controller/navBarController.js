@@ -11,6 +11,7 @@ IonicModule
 function($scope, $element, $attrs, $compile, $timeout, $ionicNavBarDelegate, $ionicConfig) {
 
   var CSS_HIDE = 'hide';
+  var CSS_TRANSPARENT = 'transparent';
   var DATA_NAV_BAR_CTRL = '$ionNavBarController';
   var PRIMARY_BUTTONS = 'primaryButtons';
   var SECONDARY_BUTTONS = 'secondaryButtons';
@@ -21,6 +22,7 @@ function($scope, $element, $attrs, $compile, $timeout, $ionicNavBarDelegate, $io
   var headerBars = [];
   var navElementHtml = {};
   var isVisible = true;
+  var isTransparent = false;
   var queuedTransitionStart, queuedTransitionEnd, latestTransitionId;
 
   $element.parent().data(DATA_NAV_BAR_CTRL, self);
@@ -192,14 +194,6 @@ function($scope, $element, $attrs, $compile, $timeout, $ionicNavBarDelegate, $io
     return navElementHtml[type];
   };
 
-  this.translucentBar = function(show) {
-        if (arguments.length) {
-            $scope.isTranslucent = !show;
-            $scope.$parent.$hasHeader = !!show;
-        }
-        return !$scope.isTranslucent;
-  };
-
   self.update = function(viewData) {
     var showNavBar = !viewData.hasHeaderBar && viewData.showNavBar;
     viewData.transition = $ionicConfig.navBar.transition();
@@ -316,6 +310,19 @@ function($scope, $element, $attrs, $compile, $timeout, $ionicNavBarDelegate, $io
       $element.addClass(CSS_HIDE);
     }
     isVisible = shouldShow;
+  };
+
+
+  this.transparentBar = function(shouldShow) {
+    if (!shouldShow && isTransparent) {
+      headerBars[0].headerBarEle().removeClass(CSS_TRANSPARENT);
+      headerBars[1].headerBarEle().removeClass(CSS_TRANSPARENT);
+    } else if (shouldShow && !isTransparent) {
+      headerBars[0].headerBarEle().addClass(CSS_TRANSPARENT);
+      headerBars[1].headerBarEle().addClass(CSS_TRANSPARENT);
+    }
+    $scope.$parent.$hasHeader = !shouldShow;
+    isTransparent = shouldShow;
   };
 
 

@@ -28,6 +28,9 @@ function($timeout, $compile, $controller, $document, $ionicClickBlock, $ionicCon
   var VIEW_STATUS_CACHED = 'cached';
   var VIEW_STATUS_STAGED = 'stage';
 
+  var LEAVING_ELEM_FADE = 'leaving-view-fade';
+
+
   var transitionCounter = 0;
   var nextTransition, nextDirection;
   ionic.transition = ionic.transition || {};
@@ -131,6 +134,7 @@ function($timeout, $compile, $controller, $document, $ionicClickBlock, $ionicCon
 
             } else if (viewEle.data(DATA_ELE_IDENTIFIER) === navViewActiveEleId) {
               leavingEle = viewEle;
+      //          leavingEle.addClass(LEAVING_ELEM_FADE);
             }
 
             if (enteringEle && leavingEle) break;
@@ -208,8 +212,10 @@ function($timeout, $compile, $controller, $document, $ionicClickBlock, $ionicCon
           switcher.emit('before', transData);
 
           // 1) get the transition ready and see if it'll animate
-          var transitionFn = $ionicConfig.transitions.views[$ionicConfig.views.transition()];
+          var transitionFn = $ionicConfig.transitions.views['ios'/*$ionicConfig.views.transition()*/];
           var viewTransition = transitionFn(enteringEle, leavingEle, direction, transData.shouldAnimate);
+
+          console.log("SHOULD ANIMATE:"+viewTransition.shouldAnimate + ":" + $ionicConfig.views.transition() + ":" + transData.shouldAnimate);
 
           if (viewTransition.shouldAnimate) {
             // 2) attach transitionend events (and fallback timer)
@@ -271,6 +277,9 @@ function($timeout, $compile, $controller, $document, $ionicClickBlock, $ionicCon
             for (var x = 0; x < $ionicNavBarDelegate._instances.length; x++) {
               $ionicNavBarDelegate._instances[x].triggerTransitionEnd();
             }
+
+            //if (leavingEle != null && !(typeof leavingEle == 'undefined'))
+            //  leavingEle.removeClass(LEAVING_ELEM_FADE);
 
             // remove any references that could cause memory issues
             nextTransition = nextDirection = enteringView = enteringEle = leavingEle = null;

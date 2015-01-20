@@ -121,6 +121,10 @@ function($scope, $element, $attrs, $ionicNavBarDelegate, $ionicHistory, $ionicVi
     associatedNavBarCtrl && associatedNavBarCtrl.showBar(val);
   };
 
+  self.transparentBar = function(val) {
+    var associatedNavBarCtrl = getAssociatedNavBarCtrl();
+    associatedNavBarCtrl && associatedNavBarCtrl.transparentBar(val);
+  };
 
   self.isPrimary = function(val) {
     if (arguments.length) {

@@ -93,6 +93,14 @@ function($scope, $element, $attrs, $compile, $ionicHistory, $ionicViewSwitcher) 
       }));
     }
 
+    if (isDefined($attrs.transparentNavBar)) {
+      deregisters.push($scope.$watch($attrs.transparentNavBar, function(val) {
+        navViewCtrl.transparentBar(val);
+      }));
+    } else {
+      navViewCtrl.transparentBar(false);
+    }
+
     $ionicViewSwitcher.setActiveView($element.parent());
   }
 
