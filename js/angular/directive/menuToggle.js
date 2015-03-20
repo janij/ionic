@@ -12,12 +12,22 @@
  * would open the given side menu, and tapping it again would close it.
  *
  * ```html
- * <ion-view>
+ * <ion-nav-bar>
  *   <ion-nav-buttons side="left">
  *    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
  *   </ion-nav-buttons>
- *  ...
- * </ion-view>
+ * </ion-nav-bar>
+ * ```
+ *
+ * ### Button Hidden On Child Views
+ * By default, the menu toggle button will only appear on a root
+ * level side-menu page. Navigating in to child views will hide the menu-
+ * toggle button. They can be made visible on child pages by setting the
+ * enable-menu-with-back-views attribute of the {@link ionic.directive:ionSideMenus}
+ * directive to true.
+ *
+ * ```html
+ * <ion-side-menus enable-menu-with-back-views="true">
  * ```
  */
 IonicModule
@@ -26,7 +36,7 @@ IonicModule
     restrict: 'AC',
     link: function($scope, $element, $attr) {
       $scope.$on('$ionicView.beforeEnter', function(ev, viewData) {
-        if (viewData.showBack) {
+        if (viewData.enableBack) {
           var sideMenuCtrl = $element.inheritedData('$ionSideMenusController');
           if (!sideMenuCtrl.enableMenuWithBackViews()) {
             $element.addClass('hide');

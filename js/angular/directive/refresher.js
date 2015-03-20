@@ -48,19 +48,23 @@
  * of the refresher.
  * @param {expression=} on-pulling Called when the user starts to pull down
  * on the refresher.
+ * @param {expression=} on-pull-progress Repeatedly called as the user is pulling down
+ * the refresher. The callback should have a `progress` argument which will be a number
+ * from `0` and `1`. For example, if the user has pulled the refresher halfway
+ * down, its progress would be `0.5`.
  * @param {string=} pulling-icon The icon to display while the user is pulling down.
- * Default: 'ion-arrow-down-c'.
- * @param {string=} pulling-text The text to display while the user is pulling down.
- * @param {string=} refreshing-icon The icon to display after user lets go of the
- * refresher.
- * @param {string=} refreshing-text The text to display after the user lets go of
- * the refresher.
+ * Default: 'ion-android-arrow-down'.
+ * @param {string=} loader The {@link ionic.directive:ionLoader} icon to display
+ * after user lets go of the refresher. The SVG ionLoader is now the default, replacing
+ * rotating font icons.
+ * @param {string=} refreshing-icon The font icon to display after user lets go of the
+ * refresher. This is depreicated in favor of the SVG {@link ionic.directive:ionLoader}.
  * @param {boolean=} disable-pulling-rotation Disables the rotation animation of the pulling
  * icon when it reaches its activated threshold. To be used with a custom `pulling-icon`.
  *
  */
 IonicModule
-.directive('ionRefresher', ['$ionicBind', function($ionicBind) {
+.directive('ionRefresher', ['$ionicBind', '$parse', function($ionicBind, $parse) {
   return {
     restrict: 'E',
     replace: true,
@@ -73,35 +77,45 @@ IonicModule
           '<i class="icon {{pullingIcon}}"></i>' +
         '</div>' +
         '<div class="text-pulling" ng-bind-html="pullingText"></div>' +
-        '<div class="icon-refreshing"><i class="icon {{refreshingIcon}}"></i></div>' +
+        '<div class="icon-refreshing">' +
+          '<ion-loader ng-if="showLoader" icon="{{loader}}"></ion-loader>' +
+          '<i ng-if="!showLoader" class="icon {{refreshingIcon}}"></i>' +
+        '</div>' +
         '<div class="text-refreshing" ng-bind-html="refreshingText"></div>' +
       '</div>' +
     '</div>',
-    compile: function($element, $attrs) {
+    link: function($scope, $element, $attrs, scrollCtrl) {
       if (angular.isUndefined($attrs.pullingIcon)) {
-        $attrs.$set('pullingIcon', 'ion-ios7-arrow-down');
+        $attrs.$set('pullingIcon', 'ion-android-arrow-down');
       }
-      if (angular.isUndefined($attrs.refreshingIcon)) {
-        $attrs.$set('refreshingIcon', 'ion-loading-d');
-      }
-      return function($scope, $element, $attrs, scrollCtrl) {
-        $ionicBind($scope, $attrs, {
-          pullingIcon: '@',
-          pullingText: '@',
-          refreshingIcon: '@',
-          refreshingText: '@',
-          disablePullingRotation: '@',
-          $onRefresh: '&onRefresh',
-          $onPulling: '&onPulling'
-        });
+      $scope.showLoader = angular.isUndefined($attrs.refreshingIcon);
 
-        scrollCtrl._setRefresher($scope, $element[0]);
-        $scope.$on('scroll.refreshComplete', function() {
-          $scope.$evalAsync(function() {
-            scrollCtrl.scrollView.finishPullToRefresh();
+      $ionicBind($scope, $attrs, {
+        pullingIcon: '@',
+        pullingText: '@',
+        refreshingIcon: '@',
+        refreshingText: '@',
+        loader: '@',
+        disablePullingRotation: '@',
+        $onRefresh: '&onRefresh',
+        $onPulling: '&onPulling'
+      });
+
+      if (isDefined($attrs.onPullProgress)) {
+        var onPullProgressFn = $parse($attrs.onPullProgress);
+        $scope.$onPullProgress = function(progress) {
+          onPullProgressFn($scope, {
+            progress: progress
           });
+        };
+      }
+
+      scrollCtrl._setRefresher($scope, $element[0]);
+      $scope.$on('scroll.refreshComplete', function() {
+        $scope.$evalAsync(function() {
+          scrollCtrl.scrollView.finishPullToRefresh();
         });
-      };
+      });
     }
   };
 }]);

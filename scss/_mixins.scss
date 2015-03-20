@@ -125,7 +125,7 @@
 // Checkbox Mixins
 // --------------------------------------------------
 
-@mixin checkbox-style($off-border-color, $on-bg-color) {
+@mixin checkbox-style($off-border-color, $on-bg-color, $on-border-color) {
   & input:before,
   & .checkbox-icon:before {
     border-color: $off-border-color;
@@ -135,6 +135,7 @@
   & input:checked:before,
   & input:checked + .checkbox-icon:before {
     background: $on-bg-color;
+    border-color: $on-border-color;
   }
 }
 
@@ -146,6 +147,15 @@
   // the track when the toggle is "on"
   & input:checked + .track {
     border-color: $on-border-color;
+    background-color: $on-bg-color;
+  }
+}
+@mixin toggle-android-style($on-bg-color) {
+  // the track when the toggle is "on"
+  & input:checked + .track {
+    background-color: rgba($on-bg-color, .5);
+  }
+  & input:checked + .track .handle {
     background-color: $on-bg-color;
   }
 }
@@ -597,6 +607,7 @@
   -webkit-order: $n;
   -ms-flex-order: $n;
   order: $n;
+  -webkit-box-ordinal-group: $n;
 }
 
 @mixin responsive-grid-break($selector, $max-width) {

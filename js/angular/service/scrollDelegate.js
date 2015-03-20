@@ -58,7 +58,7 @@
  * ```
  */
 IonicModule
-.service('$ionicScrollDelegate', delegateService([
+.service('$ionicScrollDelegate', ionic.DelegateService([
   /**
    * @ngdoc method
    * @name $ionicScrollDelegate#resize
@@ -145,6 +145,5 @@ IonicModule
    *
    * Example: `$ionicScrollDelegate.$getByHandle('my-handle').scrollTop();`
    */
-   'getByHandle'
 ]));
 

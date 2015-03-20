@@ -32,7 +32,7 @@ describe('$ionicScroll Controller', function() {
     spyOn($ionicScrollDelegate, '_registerInstance');
     var el = setup();
     expect($ionicScrollDelegate._registerInstance)
-      .toHaveBeenCalledWith(ctrl, undefined);
+      .toHaveBeenCalledWith(ctrl, undefined, jasmine.any(Function));
   }));
 
   it('should register with given handle and deregister on destroy', inject(function($ionicScrollDelegate) {
@@ -44,7 +44,7 @@ describe('$ionicScroll Controller', function() {
       delegateHandle: 'something'
     });
     expect($ionicScrollDelegate._registerInstance)
-      .toHaveBeenCalledWith(ctrl, 'something');
+      .toHaveBeenCalledWith(ctrl, 'something', jasmine.any(Function));
 
     expect(deregisterSpy).not.toHaveBeenCalled();
     scope.$destroy();
@@ -95,14 +95,6 @@ describe('$ionicScroll Controller', function() {
     expect(ctrl.scrollView.run).toHaveBeenCalled();
   });
 
-  it('should resize the scrollview on window resize', function() {
-    setup();
-    timeout.flush();
-    spyOn(ctrl.scrollView, 'resize');
-    ionic.trigger('resize', { target: window });
-    expect(ctrl.scrollView.resize).toHaveBeenCalled();
-  });
-
 
   it('should unbind window event listener on scope destroy', inject(function($window) {
     spyOn(ionic, 'on');
@@ -129,16 +121,6 @@ describe('$ionicScroll Controller', function() {
     expect(scope.$onScroll.mostRecentCall.args[0].scrollLeft).toBe(4);
     expect(scope.$onScroll.mostRecentCall.args[0].scrollTop).toBe(3);
   });
-
-  it('.resize() should resize after timeout', inject(function($timeout) {
-    setup();
-    $timeout.flush();
-    spyOn(ctrl.scrollView, 'resize');
-    ctrl.resize();
-    expect(ctrl.scrollView.resize).not.toHaveBeenCalled();
-    $timeout.flush();
-    expect(ctrl.scrollView.resize).toHaveBeenCalled();
-  }));
 
   it('.getScrollView', function() {
     setup();

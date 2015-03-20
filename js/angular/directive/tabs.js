@@ -24,15 +24,15 @@
  * ```html
  * <ion-tabs class="tabs-positive tabs-icon-only">
  *
- *   <ion-tab title="Home" icon-on="ion-ios7-filing" icon-off="ion-ios7-filing-outline">
+ *   <ion-tab title="Home" icon-on="ion-ios-filing" icon-off="ion-ios-filing-outline">
  *     <!-- Tab 1 content -->
  *   </ion-tab>
  *
- *   <ion-tab title="About" icon-on="ion-ios7-clock" icon-off="ion-ios7-clock-outline">
+ *   <ion-tab title="About" icon-on="ion-ios-clock" icon-off="ion-ios-clock-outline">
  *     <!-- Tab 2 content -->
  *   </ion-tab>
  *
- *   <ion-tab title="Settings" icon-on="ion-ios7-gear" icon-off="ion-ios7-gear-outline">
+ *   <ion-tab title="Settings" icon-on="ion-ios-gear" icon-off="ion-ios-gear-outline">
  *     <!-- Tab 3 content -->
  *   </ion-tab>
  *
@@ -47,7 +47,8 @@ IonicModule
 .directive('ionTabs', [
   '$ionicTabsDelegate',
   '$ionicConfig',
-function($ionicTabsDelegate, $ionicConfig) {
+  '$ionicHistory',
+function($ionicTabsDelegate, $ionicConfig, $ionicHistory) {
   return {
     restrict: 'E',
     scope: true,
@@ -59,13 +60,12 @@ function($ionicTabsDelegate, $ionicConfig) {
       innerElement.append(tElement.contents());
 
       tElement.append(innerElement)
-              .addClass( 'tabs-' + $ionicConfig.tabs.position() )
-              .addClass( 'tabs-' + $ionicConfig.tabs.style() );
+              .addClass('tabs-' + $ionicConfig.tabs.position() + ' tabs-' + $ionicConfig.tabs.style());
 
       return { pre: prelink, post: postLink };
       function prelink($scope, $element, $attr, tabsCtrl) {
         var deregisterInstance = $ionicTabsDelegate._registerInstance(
-          tabsCtrl, $attr.delegateHandle
+          tabsCtrl, $attr.delegateHandle, tabsCtrl.hasActiveScope
         );
 
         tabsCtrl.$scope = $scope;
@@ -79,7 +79,7 @@ function($ionicTabsDelegate, $ionicConfig) {
           $scope.$hasTabsTop = isTabsTop && !isHidden;
         });
 
-        $scope.$on('$destroy', function(){
+        $scope.$on('$destroy', function() {
           // variable to inform child tabs that they're all being blown away
           // used so that while destorying an individual tab, each one
           // doesn't select the next tab as the active one, which causes unnecessary

@@ -971,6 +971,28 @@ describe('Ionic History', function() {
     expect(homeReg.direction).toEqual('exit');
   }));
 
+  it('should goToHistoryRoot', inject(function($state) {
+    var tab1Container = {};
+    ionicHistory.registerHistory(tab1Container);
+
+    $state.go('tabs.tab1view1');
+    var tab1view1 = ionicHistory.register(tab1Container, false);
+    rootScope.$apply();
+
+    $state.go('tabs.tab1view2');
+    var tab1view2 = ionicHistory.register(tab1Container, false);
+    rootScope.$apply();
+
+    ionicHistory.goToHistoryRoot(tab1Container.$historyId);
+    var tab1view1Tap = ionicHistory.register(tab1Container, false);
+    rootScope.$apply();
+
+    expect(ionicHistory.viewHistory().currentView.viewId).toBe(tab1view1.viewId);
+    expect(tab1view1Tap.viewId).toBe(tab1view1.viewId);
+    expect(tab1view1Tap.action).toBe('moveBack');
+    expect(tab1view1Tap.direction).toBe('back');
+  }));
+
   it('should set nextViewOptions disableAnimate', inject(function($state) {
     $state.go('home');
     rootScope.$apply();
@@ -983,7 +1005,7 @@ describe('Ionic History', function() {
     rootScope.$apply();
     var infoReg = ionicHistory.register({}, false);
     expect(infoReg.direction).toEqual('none');
-    expect(infoReg.showBack).toEqual(true);
+    expect(infoReg.enableBack).toEqual(true);
     expect(ionicHistory.viewHistory().histories[infoReg.historyId].stack.length).toEqual(2);
     expect(ionicHistory.viewHistory().backView.viewId).toBe(homeReg.viewId);
   }));
@@ -999,7 +1021,7 @@ describe('Ionic History', function() {
     $state.go('info');
     rootScope.$apply();
     var infoReg = ionicHistory.register({}, false);
-    expect(infoReg.showBack).toEqual(false);
+    expect(infoReg.enableBack).toEqual(false);
     expect(infoReg.direction).toEqual('forward');
     expect(ionicHistory.viewHistory().histories[infoReg.historyId].stack.length).toEqual(2);
     expect(ionicHistory.viewHistory().backView).toBe(null);
@@ -1016,7 +1038,7 @@ describe('Ionic History', function() {
     $state.go('info');
     rootScope.$apply();
     var infoReg = ionicHistory.register({}, false);
-    expect(infoReg.showBack).toEqual(false);
+    expect(infoReg.enableBack).toEqual(false);
     expect(infoReg.direction).toEqual('forward');
     expect(ionicHistory.viewHistory().histories[infoReg.historyId].stack.length).toEqual(1);
     expect(ionicHistory.viewHistory().backView).toBe(null);
@@ -1033,11 +1055,52 @@ describe('Ionic History', function() {
     expect( ionicHistory.nextViewOptions({}) ).toEqual({});
   }));
 
-  it('should be an abstract view', inject(function($document) {
-    var reg = ionicHistory.register({}, false);
-    expect(reg.action).not.toEqual('abstractView');
+  it('should should find ion-tabs as an abstract element', inject(function($ionicHistory, $document) {
+    var ele = angular.element('<ion-tabs>');
+    expect($ionicHistory.isAbstractEle(ele)).toBe(true);
 
-    reg = ionicHistory.register({}, true);
+    ele = angular.element('<ion-tab>');
+    expect($ionicHistory.isAbstractEle(ele)).toBe(false);
+  }));
+
+  it('should should find ion-side-menus as an abstract element', inject(function($ionicHistory, $document) {
+    var ele = angular.element('<ion-side-menus>');
+    expect($ionicHistory.isAbstractEle(ele)).toBe(true);
+
+    ele = angular.element('<ion-side-menu>');
+    expect($ionicHistory.isAbstractEle(ele)).toBe(false);
+  }));
+
+  it('should should find first child thats an ion-tabs as an abstract element', inject(function($ionicHistory, $document) {
+    var div = angular.element('<div>');
+    var ionTabs = angular.element('<ion-tabs>');
+    div.append(ionTabs);
+    expect($ionicHistory.isAbstractEle(div)).toBe(true);
+  }));
+
+  it('should should be an abstract element from the viewLocals', inject(function($ionicHistory, $document) {
+    var div = angular.element('<div>');
+    var viewLocals = {
+      $$state: {
+        self: {
+          abstract: true
+        }
+      }
+    };
+    expect($ionicHistory.isAbstractEle(div, viewLocals)).toBe(true);
+
+    var viewLocals = {
+      $$state: {
+        self: {}
+      }
+    };
+    expect($ionicHistory.isAbstractEle(div, viewLocals)).toBe(false);
+  }));
+
+  it('should be an abstract view', inject(function($document) {
+    var reg = ionicHistory.register({}, {
+      $template: '<ion-tabs></ion-tabs>'
+    });
     expect(reg.action).toEqual('abstractView');
   }));
 
@@ -1063,6 +1126,141 @@ describe('Ionic History', function() {
     newView = ionicHistory.createView({ stateName: 'about', url: '/url'  });
     expect(newView.stateName).toEqual('about');
   }));
+
+  it('should not be active when scope null', function() {
+    expect(ionicHistory.isActiveScope(null)).toEqual(false);
+    expect(ionicHistory.isActiveScope(undefined)).toEqual(false);
+    expect(ionicHistory.isActiveScope()).toEqual(false);
+  });
+
+  it('should not be active when scope disconnected', function() {
+    var scope = {
+      $$disconnected: true
+    };
+    expect(ionicHistory.isActiveScope(scope)).toEqual(false);
+  });
+
+  it('should not be active when parent scope is disconnected', function() {
+    var scope = {
+      $parent: {
+        $parent: {
+          $$disconnected: true
+        }
+      }
+    };
+    expect(ionicHistory.isActiveScope(scope)).toEqual(false);
+  });
+
+  it('should be active w/ scope but no current history id', function() {
+    ionicHistory.registerHistory('1234');
+    expect(ionicHistory.isActiveScope(scope)).toEqual(true);
+  });
+
+  it('should be active w/ scope same history id as current view', function() {
+    ionicHistory.currentView({
+      historyId: '123'
+    });
+
+    var scope = {
+      $historyId: '123'
+    }
+    expect(ionicHistory.isActiveScope(scope)).toEqual(true);
+  });
+
+  it('should be active w/ scopes parent the same history id as current view', function() {
+    ionicHistory.currentView({
+      historyId: '123'
+    });
+
+    var scope = {
+      $parent: {
+        $historyId: '123'
+      }
+    }
+    expect(ionicHistory.isActiveScope(scope)).toEqual(true);
+  });
+
+  it('should be active when one of the parent scopes is the same history id as current view', function() {
+    ionicHistory.currentView({
+      historyId: '123'
+    });
+
+    var scope = {
+      $parent: {
+        $historyId: 'abc',
+        $parent: {
+          $historyId: 'xyz',
+          $parent: {
+            $historyId: '123'
+          }
+        }
+      }
+    };
+    expect(ionicHistory.isActiveScope(scope)).toEqual(true);
+  });
+
+  it('should be active when activeHistoryId found before historyId, for tabs controller', function() {
+    ionicHistory.currentView({
+      historyId: '123'
+    });
+
+    var scope = {
+      $parent: {
+        $parent: {
+          $activeHistoryId: '123',
+          $parent: {
+            $historyId: 'xyz'
+          }
+        }
+      }
+    };
+    expect(ionicHistory.isActiveScope(scope)).toEqual(true);
+  });
+
+  it('should be active when historyId found before activeHistoryId', function() {
+    ionicHistory.currentView({
+      historyId: '123'
+    });
+
+    var scope = {
+      $parent: {
+        $parent: {
+          $activeHistoryId: 'xyz',
+          $parent: {
+            $historyId: '123'
+          }
+        }
+      }
+    };
+    expect(ionicHistory.isActiveScope(scope)).toEqual(true);
+  });
+
+  it('should be not active w/ scope different history id as current view', function() {
+    ionicHistory.currentView({
+      historyId: '123'
+    });
+
+    var scope = {
+      $historyId: 'abc'
+    }
+    expect(ionicHistory.isActiveScope(scope)).toEqual(false);
+  });
+
+  it('should be active when scope w/ unknown history and current view root history id', function() {
+    ionicHistory.currentView({
+      historyId: 'root'
+    });
+
+    expect(ionicHistory.isActiveScope({})).toEqual(true);
+  });
+
+  it('should not be active when scope w/ unknown history and current view not root history id', function() {
+    ionicHistory.currentView({
+      historyId: '123'
+    });
+
+    expect(ionicHistory.isActiveScope({})).toEqual(false);
+  });
 
   it('should go() to a view', inject(function($location) {
     var newView = ionicHistory.createView({ stateName: 'about' });

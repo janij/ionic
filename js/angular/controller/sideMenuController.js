@@ -447,7 +447,12 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
       startX <= self.edgeThreshold ||
       startX >= self.content.element.offsetWidth - self.edgeThreshold;
 
-    var menuEnabled = self.enableMenuWithBackViews() ? true : !$ionicHistory.backView();
+    var backView = $ionicHistory.backView();
+    var menuEnabled = enableMenuWithBackViews ? true : !backView;
+    if (!menuEnabled) {
+      var currentView = $ionicHistory.currentView() || {};
+      return backView.historyId !== currentView.historyId;
+    }
 
     return ($scope.dragContent || self.isOpen()) &&
       dragIsWithinBounds &&
@@ -485,7 +490,9 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   });
 
   var deregisterInstance = $ionicSideMenuDelegate._registerInstance(
-    self, $attrs.delegateHandle
+    self, $attrs.delegateHandle, function() {
+      return $ionicHistory.isActiveScope($scope);
+    }
   );
 
   $scope.$on('$destroy', function() {

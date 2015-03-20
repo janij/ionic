@@ -4,17 +4,18 @@ IonicModule
   '$element',
   '$attrs',
   '$compile',
-  '$ionicHistory',
+  '$rootScope',
   '$ionicViewSwitcher',
-function($scope, $element, $attrs, $compile, $ionicHistory, $ionicViewSwitcher) {
+function($scope, $element, $attrs, $compile, $rootScope, $ionicViewSwitcher) {
   var self = this;
   var navElementHtml = {};
   var navViewCtrl;
   var navBarDelegateHandle;
   var hasViewHeaderBar;
   var deregisters = [];
+  var viewTitle;
 
-  var deregIonNavBarInit = $scope.$on('ionNavBar.init', function(ev, delegateHandle){
+  var deregIonNavBarInit = $scope.$on('ionNavBar.init', function(ev, delegateHandle) {
     // this view has its own ion-nav-bar, remember the navBarDelegateHandle for this view
     ev.stopPropagation();
     navBarDelegateHandle = delegateHandle;
@@ -42,23 +43,24 @@ function($scope, $element, $attrs, $compile, $ionicHistory, $ionicViewSwitcher) 
     if (transData && !transData.viewNotified) {
       transData.viewNotified = true;
 
-      var viewTitle = $attrs.viewTitle || $attrs.title;
+      if (!$rootScope.$$phase) $scope.$digest();
+      viewTitle = isDefined($attrs.viewTitle) ? $attrs.viewTitle : $attrs.title;
 
-      $ionicHistory.currentTitle(viewTitle);
-
-      var buttons = {};
+      var navBarItems = {};
       for (var n in navElementHtml) {
-        buttons[n] = generateButton(navElementHtml[n]);
+        navBarItems[n] = generateNavBarItem(navElementHtml[n]);
       }
 
       navViewCtrl.beforeEnter({
         title: viewTitle,
         direction: transData.direction,
         transition: transData.transition,
+        navBarTransition: transData.navBarTransition,
         transitionId: transData.transitionId,
         shouldAnimate: transData.shouldAnimate,
-        showBack: transData.showBack && !attrTrue('hideBackButton'),
-        buttons: buttons,
+        enableBack: transData.enableBack,
+        showBack: !attrTrue('hideBackButton'),
+        navBarItems: navBarItems,
         navBarDelegate: navBarDelegateHandle || null,
         showNavBar: !attrTrue('hideNavBar'),
         hasHeaderBar: !!hasViewHeaderBar
@@ -75,10 +77,8 @@ function($scope, $element, $attrs, $compile, $ionicHistory, $ionicViewSwitcher) 
     // but also deregister the observe before it leaves
     var viewTitleAttr = isDefined($attrs.viewTitle) && 'viewTitle' || isDefined($attrs.title) && 'title';
     if (viewTitleAttr) {
-      deregisters.push($attrs.$observe(viewTitleAttr, function(val) {
-        navViewCtrl.title(val);
-        $ionicHistory.currentTitle(val);
-      }));
+      titleUpdate($attrs[viewTitleAttr]);
+      deregisters.push($attrs.$observe(viewTitleAttr, titleUpdate));
     }
 
     if (isDefined($attrs.hideBackButton)) {
@@ -100,8 +100,14 @@ function($scope, $element, $attrs, $compile, $ionicHistory, $ionicViewSwitcher) 
     } else {
       navViewCtrl.transparentBar(false);
     }
+  }
 
-    $ionicViewSwitcher.setActiveView($element.parent());
+
+  function titleUpdate(newTitle) {
+    if (isDefined(newTitle) && newTitle !== viewTitle) {
+      viewTitle = newTitle;
+      navViewCtrl.title(viewTitle);
+    }
   }
 
 
@@ -114,7 +120,7 @@ function($scope, $element, $attrs, $compile, $ionicHistory, $ionicViewSwitcher) 
   }
 
 
-  function generateButton(html) {
+  function generateNavBarItem(html) {
     if (html) {
       // every time a view enters we need to recreate its view buttons if they exist
       return $compile(html)($scope.$new());
@@ -123,7 +129,7 @@ function($scope, $element, $attrs, $compile, $ionicHistory, $ionicViewSwitcher) 
 
 
   function attrTrue(key) {
-    return $attrs[key] == 'true' || $attrs[key] === '';
+    return !!$scope.$eval($attrs[key]);
   }
 
 
@@ -132,4 +138,3 @@ function($scope, $element, $attrs, $compile, $ionicHistory, $ionicViewSwitcher) 
   };
 
 }]);
-
