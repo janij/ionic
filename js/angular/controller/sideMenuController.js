@@ -112,6 +112,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   };
 
     self.closeToUnity = function(value, newElem) {
+
         $rootScope.unityView = value;
 
         newElem.addClass('side-menu-item-selected');
@@ -129,7 +130,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
             //menuElem.removeClass('isac-menu-animated');
         }
 
-        self.openPercentage(0);
+      self.openPercentage(0);
     };
 
     /**
@@ -490,9 +491,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   });
 
   var deregisterInstance = $ionicSideMenuDelegate._registerInstance(
-    self, $attrs.delegateHandle, function() {
-      return $ionicHistory.isActiveScope($scope);
-    }
+    self, $attrs.delegateHandle
   );
 
   $scope.$on('$destroy', function() {

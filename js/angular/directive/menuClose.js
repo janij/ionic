@@ -26,14 +26,13 @@ IonicModule
 .directive('menuClose', ['$ionicHistory', function($ionicHistory) {
   return {
     restrict: 'AC',
-    link: function($scope, $element) {
+    link: function($scope, $element, $attr) {
       $element.bind('click', function() {
         var sideMenuCtrl = $element.inheritedData('$ionSideMenusController');
         if (sideMenuCtrl) {
           $ionicHistory.nextViewOptions({
             historyRoot: true,
-            disableAnimate: true,
-            expire: 300
+            disableAnimate: true
           });
 
           var unityCamViewAttr = angular.isDefined($attr.unityCamView) ?
@@ -53,6 +52,7 @@ IonicModule
           }
 
           //$rootScope.unityView = unityCamViewAttr;
+//          sideMenuCtrl.close();
           sideMenuCtrl.closeToUnity(unityCamViewAttr, $element);
         }
       });

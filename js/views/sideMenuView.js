@@ -28,7 +28,7 @@
     }),
     setTranslateX: ionic.animationFrameThrottle(function(x) {
           console.log("TRANSLATE3D:" + x);
-          this.el.style[ionic.CSS.TRANSFORM] = 'translate3d(' + (x-80) + 'px, 0, 0)';
+          this.el.style[ionic.CSS.TRANSFORM] = 'translate3d(' + (x-250) + 'px, 0, 0)';
       }),
     setIsEnabled: function(isEnabled) {
       this.isEnabled = isEnabled;
