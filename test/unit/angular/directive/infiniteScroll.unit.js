@@ -33,7 +33,8 @@ describe('ionicInfiniteScroll directive', function() {
           resize: jasmine.createSpy('resize')
         },
         resize: jasmine.createSpy('resize'),
-        $element: angular.element('<div>')
+        $element: angular.element('<div>'),
+        isNative: function() {return false;}
       });
       $compile(element)(scope);
       ionic.requestAnimationFrame = function() {};
@@ -48,15 +49,18 @@ describe('ionicInfiniteScroll directive', function() {
     inject(function($rootScope, $compile, $document) {
       var scope = $rootScope.$new();
       angular.extend(scope, scopeProps || {});
-      parent = angular.element('<ion-content class="overflow-scroll"><ion-infinite-scroll ' + (attrs || '') +
-                               '></ion-infinite-scroll></ion-content></ion-content>');
+      parent = angular.element('<ion-content class="overflow-scroll" overflow-scroll="true">' +
+                               '<ion-infinite-scroll ' + (attrs || '') +
+                               '></ion-infinite-scroll></ion-content>');
       if (options && !!options.scrollingX) parent[0].style['overflow-x'] ='scroll';
       if (options && !!options.scrollingY) parent[0].style['overflow-y'] ='scroll';
-      element = parent.find('ion-infinite-scroll');
+
       ionic.animationFrameThrottle = function(cb) { return function() { cb(); }; };
-      $compile(element)(scope);
+      $compile(parent)(scope);
+      element = parent.find('ion-infinite-scroll');
       ionic.requestAnimationFrame = function() {};
       ctrl = element.controller('ionInfiniteScroll');
+
       // create a fake scrollEl since they can't be faked if we're passing in scroll data
       if (options) {
         ctrl.scrollEl = {style:{
@@ -310,6 +314,23 @@ describe('ionicInfiniteScroll directive', function() {
     expect(el.controller('ionInfiniteScroll').checkBounds).not.toHaveBeenCalled();
     $timeout.flush();
     expect(el.controller('ionInfiniteScroll').checkBounds).not.toHaveBeenCalled();
+  }));
+
+  it('should checkbounds on complete if the page is still active', inject(function($timeout) {
+    var el = setupJS();
+
+    el.controller('ionInfiniteScroll').scrollView.__container = {offsetHeight:50};
+    spyOn(el.controller('ionInfiniteScroll'),'checkBounds');
+    el.controller('ionInfiniteScroll').__finishInfiniteScroll();
+    $timeout.flush();
+    expect(el.controller('ionInfiniteScroll').checkBounds).toHaveBeenCalled();
+    expect(el.controller('ionInfiniteScroll').checkBounds.callCount).toBe(2);
+
+    el.controller('ionInfiniteScroll').scrollView.__container = {offsetHeight:0};
+    el.controller('ionInfiniteScroll').__finishInfiniteScroll();
+    $timeout.flush();
+    expect(el.controller('ionInfiniteScroll').checkBounds.callCount).toBe(2);
+
   }));
 
   it('scroll.infiniteScrollComplete should work', inject(function($timeout) {

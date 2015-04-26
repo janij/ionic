@@ -9,7 +9,10 @@
   ionic.activator = {
 
     start: function(e) {
-      var self = this;
+      var hitX = ionic.tap.pointerCoord(e).x;
+      if (hitX > 0 && hitX < 30) {
+        return;
+      }
 
       var hitX = ionic.tap.pointerCoord(e).x;
       if (hitX > 0 && hitX < 45) {

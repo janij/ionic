@@ -24,15 +24,6 @@
 .invisible {
   visibility: hidden;
 }
-.transparent {
-  background-color: transparent !important;
-  background: none !important;
-  border-width: 0px !important;
-}
-
-.leaving-view-fade {
-  opacity: 0.4 !important;
-}
 
 .keyboard-open .hide-on-keyboard-open {
   display: none;
@@ -295,4 +286,11 @@
   &.horizontal {
     display: inline-block;
   }
+}
+
+// ng-show fix for windows phone
+// https://www.hoessl.eu/2014/12/on-using-the-ionic-framework-for-windows-phone-8-1-apps/
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak,
+.x-ng-cloak, .ng-hide:not(.ng-hide-animate) {
+  display: none !important;
 }

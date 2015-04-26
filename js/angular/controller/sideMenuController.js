@@ -8,7 +8,9 @@ IonicModule
   '$ionicPlatform',
   '$ionicBody',
   '$ionicHistory',
-function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody, $ionicHistory) {
+  '$ionicScrollDelegate',
+  'IONIC_BACK_PRIORITY',
+function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody, $ionicHistory, $ionicScrollDelegate, IONIC_BACK_PRIORITY) {
   var self = this;
   var rightShowing, leftShowing, isDragging;
   var startX, lastX, offsetX, isAsideExposed;
@@ -478,7 +480,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
       }
   };
 
-  var deregisterBackButtonAction = angular.noop;
+  var deregisterBackButtonAction = noop;
   var closeSideMenu = angular.bind(self, self.close);
 
   $scope.$watch(function() {
@@ -488,7 +490,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
     if (isOpen) {
       deregisterBackButtonAction = $ionicPlatform.registerBackButtonAction(
         closeSideMenu,
-        PLATFORM_BACK_BUTTON_PRIORITY_SIDE_MENU
+        IONIC_BACK_PRIORITY.sideMenu
       );
     }
   });
