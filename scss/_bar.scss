@@ -247,9 +247,11 @@
   }
   .buttons-left span {
     margin-right: 5px;
+    display: inherit;
   }
   .buttons-right span {
     margin-left: 5px;
+    display: inherit;
   }
 
   // Place the last button in a bar on the right of the bar
@@ -268,6 +270,10 @@
 
 .platform-android {
 
+  .nav-bar-has-subheader .bar {
+    background-image: none;
+  }
+
   .bar {
 
     .back-button .icon:before {
@@ -276,7 +282,7 @@
 
     .title {
       font-size: 19px;
-      line-height: 43px;
+      line-height: $bar-height;
     }
   }
 
@@ -397,3 +403,8 @@
 .bar .buttons .hide {
   display: none;
 }
+
+.nav-bar-tabs-top .bar {
+  background-image: none;
+}
+

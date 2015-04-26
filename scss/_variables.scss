@@ -7,7 +7,7 @@ $isaclight:                       #723333 !default;
 $stable:                          #f8f8f8 !default;
 $positive:                        #4a87ee !default;
 $calm:                            #43cee6 !default;
-$balanced:                        #953163 !default;
+$balanced:                        #FC4E5B !default;
 $energized:                       #f0b840 !default;
 $assertive:                       #ef4e3a !default;
 $royal:                           #D3335D !default;
@@ -282,8 +282,8 @@ $tab-item-max-width:              150px !default;
 
 $tabs-off-opacity:                0.4 !default;
 $tabs-striped-off-opacity:        $tabs-off-opacity !default;
-$tabs-striped-off-color: #000;
-$tabs-striped-border-width: 2px;
+$tabs-striped-off-color:          #000 !default;
+$tabs-striped-border-width:       2px !default;
 
 
 // Items
@@ -561,7 +561,7 @@ $menu-side-shadow:                -1px 0px 9px rgba(0, 0, 0, 0.5), 1px 0px 2px r
 // -------------------------------
 
 $modal-bg-color:                  #fff !default;
-$modal-backdrop-bg-active:        rgba(0,0,0,0.5) !default;
+$modal-backdrop-bg-active:        #000 !default;
 $modal-backdrop-bg-inactive:      rgba(0,0,0,0) !default;
 
 $modal-inset-mode-break-point:    680px !default;  // @media min-width
@@ -680,6 +680,43 @@ $badge-dark-text:                 $button-dark-text !default;
 
 $badge-default-bg:                transparent !default;
 $badge-default-text:              #AAAAAA !default;
+
+
+// Spinners
+// -------------------------------
+
+$spinner-width:                   28px !default;
+$spinner-height:                  28px !default;
+
+$spinner-light-stroke:            $light !default;
+$spinner-light-fill:              $light !default;
+
+$spinner-stable-stroke:           $stable !default;
+$spinner-stable-fill:             $stable !default;
+
+$spinner-positive-stroke:         $positive !default;
+$spinner-positive-fill:           $positive !default;
+
+$spinner-calm-stroke:             $calm !default;
+$spinner-calm-fill:               $calm !default;
+
+$spinner-balanced-stroke:         $balanced !default;
+$spinner-balanced-fill:           $balanced !default;
+
+$spinner-assertive-stroke:        $assertive !default;
+$spinner-assertive-fill:          $assertive !default;
+
+$spinner-energized-stroke:        $energized !default;
+$spinner-energized-fill:          $energized !default;
+
+$spinner-royal-stroke:            $royal !default;
+$spinner-royal-fill:              $royal !default;
+
+$spinner-dark-stroke:             $dark !default;
+$spinner-dark-fill:               $dark !default;
+
+$spinner-default-stroke:          $dark !default;
+$spinner-default-fill:            $dark !default;
 
 
 // Z-Indexes

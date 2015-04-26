@@ -182,13 +182,20 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
 
     // add the CSS class "menu-open" if the percentage does not
     // equal 0, otherwise remove the class from the body element
-    $ionicBody.enableClass( (percentage !== 0), 'menu-open');
+    $ionicBody.enableClass((percentage !== 0), 'menu-open');
     $scope.isSideMenuOpen = (percentage !== 0);
-    if (percentage !== 0) {
-        //menuElem.removeClass('camera-open-menu');
-       // viewElem.removeClass('camera-open-bg');
-    }
+    freezeAllScrolls(false);
   };
+
+  function freezeAllScrolls(shouldFreeze) {
+    if (shouldFreeze && !self.isScrollFreeze) {
+      $ionicScrollDelegate.freezeAllScrolls(shouldFreeze);
+
+    } else if (!shouldFreeze && self.isScrollFreeze) {
+      $ionicScrollDelegate.freezeAllScrolls(false);
+    }
+    self.isScrollFreeze = shouldFreeze;
+  }
 
   /**
    * Open the menu the given pixel amount.
@@ -244,14 +251,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
     self.content.setTranslateX(amount);
     self.left && self.left.setTranslateX(amount);
 
-//      console.log("CW ZERO 2 : " + amount + ":" + isUnityView);
-    if (isUnityView == true) {
-//        console.log("CW ZERO 2.1 : " + amount + ":" + isUnityView);
-    //    self.left && self.left.setContentWidth(amount);
-    }
-   // self.right && self.right.setContentWidth(amount);
-
-    if(amount >= 0) {
+    if (amount >= 0) {
       leftShowing = true;
       rightShowing = false;
 
@@ -349,6 +349,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   self.exposeAside = function(shouldExposeAside) {
     if (!(self.left && self.left.isEnabled) && !(self.right && self.right.isEnabled)) return;
     self.close();
+
     isAsideExposed = shouldExposeAside;
     if (self.left && self.left.isEnabled) {
       // set the left marget width if it should be exposed
@@ -367,6 +368,8 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
 
   // End a drag with the given event
   self._endDrag = function(e) {
+    freezeAllScrolls(false);
+
     if (isAsideExposed) return;
 
     if (isDragging) {
@@ -379,7 +382,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
 
   // Handle a drag event
   self._handleDrag = function(e) {
-    if (isAsideExposed) return;
+    if (isAsideExposed || !$scope.dragContent) return;
 
     // If we don't have start coords, grab and store them
     if (!startX) {
@@ -389,8 +392,6 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
       // Grab the current tap coords
       lastX = e.gesture.touches[0].pageX;
     }
-
-//    console.log("HANDLE DRAG:");
 
     // Calculate difference from the tap points
     if (!isDragging && Math.abs(lastX - startX) > self.dragThresholdX) {
@@ -414,6 +415,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
 
     if (isDragging) {
       self.openAmount(offsetX + (lastX - startX));
+      freezeAllScrolls(true);
     }
   };
 
@@ -428,7 +430,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   self.edgeThresholdEnabled = false;
   self.edgeDragThreshold = function(value) {
     if (arguments.length) {
-      if (angular.isNumber(value) && value > 0) {
+      if (isNumber(value) && value > 0) {
         self.edgeThreshold = value;
         self.edgeThresholdEnabled = true;
       } else {
@@ -466,6 +468,7 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
 
   $scope.sideMenuContentTranslateX = 0;
 
+  var deregisterBackButtonAction = noop;
   $scope.sideMenuIsClosed = function() {
 //      console.log("SIDE MENU IS CLOSED");
       if (!isDragging) {
@@ -491,7 +494,9 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
   });
 
   var deregisterInstance = $ionicSideMenuDelegate._registerInstance(
-    self, $attrs.delegateHandle
+    self, $attrs.delegateHandle, function() {
+      return $ionicHistory.isActiveScope($scope);
+    }
   );
 
   $scope.$on('$destroy', function() {
@@ -502,6 +507,9 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
       self.content.element = null;
       self.content = null;
     }
+
+    // ensure scrolls are unfrozen
+    freezeAllScrolls(false);
   });
 
   self.initialize({
