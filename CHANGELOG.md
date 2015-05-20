@@ -1,3 +1,48 @@
+<a name"1.0.0"></a>
+### 1.0.0 "uranium-unicorn" (2015-05-12)
+
+#### Bug Fixes
+
+* **config:** add support for blob image protocol. ([d684d62a](https://github.com/driftyco/ionic/commit/d684d62a), closes [#3645](https://github.com/driftyco/ionic/issues/3645))
+* **fonts:** IE does not support query string cache busting in font URLs ([bd72a33](https://github.com/driftyco/ionic/commit/bd72a33))
+* **infiniteScroll:** prevent error on infinite scroll complete with native scrolling ([86565e24](https://github.com/driftyco/ionic/commit/86565e24), closes [#3682](https://github.com/driftyco/ionic/issues/3682))
+* **ionicConfig:** allow using tel for hrefs ([db730f16](https://github.com/driftyco/ionic/commit/db730f16), closes [#3647](https://github.com/driftyco/ionic/issues/3647))
+* **modal:** Prevent scroll=false content from overlapping modal content. ([4e74ead5](https://github.com/driftyco/ionic/commit/4e74ead5), closes [#3648](https://github.com/driftyco/ionic/issues/3648))
+* **scrolling:** Collection repeat requires JS scrolling ([0557c305](https://github.com/driftyco/ionic/commit/0557c305))
+
+
+
+<a name"1.0.0-rc.5"></a>
+### 1.0.0-rc.5 "tungsten-turkey" (2015-04-27)
+
+
+#### Bug Fixes
+
+* **backButton:**
+  * remove $event ([82dca6ab](https://github.com/driftyco/ionic/commit/82dca6ab))
+* **goBack:**
+  * specify how many views to go back ([63a0834d](https://github.com/driftyco/ionic/commit/63a0834d))
+* **input:**
+  * prevent input labels from being pushed left on focus ([a6d9d4c8](https://github.com/driftyco/ionic/commit/a6d9d4c8), closes [#1778](https://github.com/driftyco/ionic/issues/1778))
+* **ionicConfig:** 
+  * Whitelist Cordova Windows Phone style protocols ([19296c85](https://github.com/driftyco/ionic/commit/19296c85))
+  * Chrome regression no longer allows integer transition duration times ([34ed2d0f](https://github.com/driftyco/ionic/commit/34ed2d0f))
+* **keyboard:** 
+  * easily disable/re-enable keyboard ([f7db8c3f](https://github.com/driftyco/ionic/commit/f7db8c3f), closes [#2285](https://github.com/driftyco/ionic/issues/2285))
+  * check if input is in scroll view ([a86ec11f](https://github.com/driftyco/ionic/commit/a86ec11f), closes [#3586](https://github.com/driftyco/ionic/issues/3586))
+* **ngShow:** WP fix for ngShow. ([c64e0bae](https://github.com/driftyco/ionic/commit/c64e0bae), closes [#3498](https://github.com/driftyco/ionic/issues/3498))
+* **range:**
+  * Display range inputs on WP ([e8ecfe9c](https://github.com/driftyco/ionic/commit/e8ecfe9c), closes [#3479](https://github.com/driftyco/ionic/issues/3479))
+* **scroll:**
+  * set ms-viewport to prevent IE "squish" effect ([26361d65](https://github.com/driftyco/ionic/commit/26361d65))
+  * Windows Phone default to native scrolling ([c40e36c1](https://github.com/driftyco/ionic/commit/c40e36c1))* 
+**slidebox:**
+  * prevent read only property error on assigning of length. ([08956b29](https://github.com/driftyco/ionic/commit/08956b29), closes [#3589](https://github.com/driftyco/ionic/issues/3589))
+* **spinners:**
+  * WP doesn't support smil. default wp spinner to spinner that uses timing func. ([e5930c0c](https://github.com/driftyco/ionic/commit/e5930c0c), closes [#3480](https://github.com/driftyco/ionic/issues/3480))
+
+
+
 <a name"1.0.0-rc.4"></a>
 ### 1.0.0-rc.4 "sulfur-suricate" (2015-04-20)
 
