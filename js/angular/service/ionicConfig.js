@@ -375,6 +375,7 @@ IonicModule
       var css = {};
       css[ionic.CSS.TRANSITION_DURATION] = d.shouldAnimate ? '' : 0;
       css.opacity = opacity;
+      css.backgroundColor = "transparent";
       if (boxShadowOpacity > -1) {
         css.boxShadow = '0 0 10px rgba(0,0,0,' + (d.shouldAnimate ? boxShadowOpacity * 0.45 : 0.3) + ')';
       }

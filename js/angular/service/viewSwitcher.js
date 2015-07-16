@@ -127,6 +127,7 @@ function($timeout, $document, $q, $ionicClickBlock, $ionicConfig, $ionicNavBarDe
                 enteringEle.attr('cache-view') == 'false' || $ionicConfig.views.maxCache() === 0) {
               enteringEle.data(DATA_NO_CACHE, true);
             }
+            enteringEle.attr("id", "view-pane");
 
             // append the entering element to the DOM, create a new scope and run link
             var viewScope = navViewCtrl.appendViewElement(enteringEle, viewLocals);
