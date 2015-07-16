@@ -1,6 +1,5 @@
 IonicModule
 .controller('$ionicSideMenus', [
-  '$rootScope',
   '$element',
   '$scope',
   '$attrs',
@@ -10,7 +9,8 @@ IonicModule
   '$ionicHistory',
   '$ionicScrollDelegate',
   'IONIC_BACK_PRIORITY',
-function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody, $ionicHistory, $ionicScrollDelegate, IONIC_BACK_PRIORITY) {
+  '$rootScope',
+function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody, $ionicHistory, $ionicScrollDelegate, IONIC_BACK_PRIORITY, $rootScope) {
   var self = this;
   var rightShowing, leftShowing, isDragging;
   var startX, lastX, offsetX, isAsideExposed;
@@ -75,8 +75,10 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
     self.left && self.left.enableAnimation();
     if (!shouldOpen) {
       self.openPercentage(0);
+      $rootScope.$emit('$ionicSideMenuClose', 'left');
     } else {
       self.openPercentage(100);
+      $rootScope.$emit('$ionicSideMenuOpen', 'left');
     }
   };
 
@@ -93,8 +95,10 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
     self.left && self.left.enableAnimation();
     if (!shouldOpen) {
       self.openPercentage(0);
+      $rootScope.$emit('$ionicSideMenuClose', 'right');
     } else {
       self.openPercentage(-100);
+      $rootScope.$emit('$ionicSideMenuOpen', 'right');
     }
   };
 
@@ -111,6 +115,8 @@ function($rootScope, $element, $scope, $attrs, $ionicSideMenuDelegate, $ionicPla
    */
   self.close = function() {
     self.openPercentage(0);
+    $rootScope.$emit('$ionicSideMenuClose', 'left');
+    $rootScope.$emit('$ionicSideMenuClose', 'right');
   };
 
     self.closeToUnity = function(value, newElem) {
