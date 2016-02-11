@@ -634,3 +634,21 @@
     }
   }
 }
+
+// Timeline mixins
+
+@mixin timeline-style($timeline-bg-color) {
+  background: $timeline-bg-color;
+}
+
+@mixin timeline-clear($timeline-text-color) {
+  color: $timeline-text-color;
+}
+
+@mixin timeline-triangle-style($timeline-triangle-color) {
+  border-right-color: $timeline-triangle-color;
+}
+
+@mixin timeline-line-style($timeline-line-shadow, $timeline-line-color) {
+  box-shadow: 0 0 0 $timeline-line-shadow $timeline-line-color;
+}

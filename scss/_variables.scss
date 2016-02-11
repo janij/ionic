@@ -718,6 +718,44 @@ $spinner-dark-fill:               $dark !default;
 $spinner-default-stroke:          $dark !default;
 $spinner-default-fill:            $dark !default;
 
+// Timeline
+// -------------------------------
+
+$timeline-line-shadow:            2px !default;
+$timeline-line-color:             #f5f5f5 !default;
+$timeline-bubble-border-radius:   5px !default;
+$title-line-height:               50% !default;
+
+
+$timeline-light-bg:               $light !default;
+$timeline-light-text:             $button-light-text !default;
+
+$timeline-stable-bg:              $stable !default;
+$timeline-stable-text:            $button-stable-text !default;
+
+$timeline-positive-bg:            $positive !default;
+$timeline-positive-text:          $button-positive-text !default;
+
+$timeline-calm-bg:                $calm !default;
+$timeline-calm-text:              $button-calm-text !default;
+
+$timeline-balanced-bg:            $balanced !default;
+$timeline-balanced-text:          $button-balanced-text !default;
+
+$timeline-assertive-bg:           $assertive !default;
+$timeline-assertive-text:         $button-assertive-text !default;
+
+$timeline-energized-bg:           $energized !default;
+$timeline-energized-text:         $button-energized-text !default;
+
+$timeline-royal-bg:               $royal !default;
+$timeline-royal-text:             $button-royal-text !default;
+
+$timeline-dark-bg:                $dark !default;
+$timeline-dark-text:              $button-dark-text !default;
+
+$timeline-default-bg:             $light !default;
+$timeline-default-text:           $button-default-text !default;
 
 // Z-Indexes
 // -------------------------------
