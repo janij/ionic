@@ -1,6 +1,5 @@
 IonicModule
 .controller('$ionicSideMenus', [
-  '$element',
   '$scope',
   '$attrs',
   '$ionicSideMenuDelegate',
@@ -10,22 +9,13 @@ IonicModule
   '$ionicScrollDelegate',
   'IONIC_BACK_PRIORITY',
   '$rootScope',
-function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody, $ionicHistory, $ionicScrollDelegate, IONIC_BACK_PRIORITY, $rootScope) {
+function($scope, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ionicBody, $ionicHistory, $ionicScrollDelegate, IONIC_BACK_PRIORITY, $rootScope) {
   var self = this;
   var rightShowing, leftShowing, isDragging;
   var startX, lastX, offsetX, isAsideExposed;
   var enableMenuWithBackViews = true;
-  var prevMenuElement = null;
 
   self.$scope = $scope;
-
-  var menuElem = $element.find("ion-side-menu");
-  var viewElem = $element.find("ion-nav-view");
-
-  if (prevMenuElement == null)
-    prevMenuElement = $element.find("#first-item");
-
-  console.log("prevMenuElement:"+prevMenuElement);
 
   self.initialize = function(options) {
     self.left = options.left;
@@ -72,7 +62,6 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
       shouldOpen = openAmount <= 0;
     }
     self.content.enableAnimation();
-    self.left && self.left.enableAnimation();
     if (!shouldOpen) {
       self.openPercentage(0);
       $rootScope.$emit('$ionicSideMenuClose', 'left');
@@ -92,7 +81,6 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
       shouldOpen = openAmount >= 0;
     }
     self.content.enableAnimation();
-    self.left && self.left.enableAnimation();
     if (!shouldOpen) {
       self.openPercentage(0);
       $rootScope.$emit('$ionicSideMenuClose', 'right');
@@ -119,29 +107,7 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
     $rootScope.$emit('$ionicSideMenuClose', 'right');
   };
 
-    self.closeToUnity = function(value, newElem) {
-
-        $rootScope.unityView = value;
-
-        newElem.addClass('side-menu-item-selected');
-        if (prevMenuElement != null) {
-            prevMenuElement.removeClass('side-menu-item-selected');
-        }
-        prevMenuElement = newElem;
-
-        if (value == true) {
-            //menuElem.addClass('isac-menu-animated');
-            viewElem.addClass('camera-open-bg');
-        }
-        else {
-            //viewElem.removeClass('camera-open-bg');
-            //menuElem.removeClass('isac-menu-animated');
-        }
-
-      self.openPercentage(0);
-    };
-
-    /**
+  /**
    * @return {float} The amount the side menu is open, either positive or negative for left (positive), or right (negative)
    */
   self.getOpenAmount = function() {
@@ -184,17 +150,17 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
     if (self.left && percentage >= 0) {
       self.openAmount(self.left.width * p);
     } else if (self.right && percentage < 0) {
-      var maxRight = self.right.width;
       self.openAmount(self.right.width * p);
     }
 
     // add the CSS class "menu-open" if the percentage does not
     // equal 0, otherwise remove the class from the body element
     $ionicBody.enableClass((percentage !== 0), 'menu-open');
-    $scope.isSideMenuOpen = (percentage !== 0);
-    freezeAllScrolls(false);
+
+    self.content.setCanScroll(percentage == 0);
   };
 
+  /*
   function freezeAllScrolls(shouldFreeze) {
     if (shouldFreeze && !self.isScrollFreeze) {
       $ionicScrollDelegate.freezeAllScrolls(shouldFreeze);
@@ -204,6 +170,7 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
     }
     self.isScrollFreeze = shouldFreeze;
   }
+  */
 
   /**
    * Open the menu the given pixel amount.
@@ -214,50 +181,28 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
     var maxLeft = self.left && self.left.width || 0;
     var maxRight = self.right && self.right.width || 0;
 
-    var isUnityView = $rootScope.unityView && $rootScope.unityView || false;
-
-//    console.log("UNITYVIEWOA:" + isUnityView+":"+maxLeft+":"+amount);
-
-//      console.log("TYPEOF:"+Boolean($rootScope.unityView));
-
-    if (!isUnityView) {
-    //    self.left && self.left.setContentWidth(maxLeft);
-    }
-
     // Check if we can move to that side, depending if the left/right panel is enabled
     if (!(self.left && self.left.isEnabled) && amount > 0) {
       self.content.setTranslateX(0);
-      self.right && self.right.setTranslateX(0);
-      //self.right && self.right.setContentWidth(0);
       return;
     }
 
     if (!(self.right && self.right.isEnabled) && amount < 0) {
       self.content.setTranslateX(0);
-      self.left && self.left.setTranslateX(0);
-      if (isUnityView == true) {
-  //        console.log("CW ZERO 1");
-//        self.left && self.left.setContentWidth(0);
-      }
       return;
     }
 
     if (leftShowing && amount > maxLeft) {
       self.content.setTranslateX(maxLeft);
-      self.left && self.left.setTranslateX(maxLeft);
-//      self.left.setContentWidth(maxLeft);
       return;
     }
 
     if (rightShowing && amount < -maxRight) {
       self.content.setTranslateX(-maxRight);
-      self.right && self.right.setTranslateX(-maxRight);
-//      self.right.setContentWidth(maxRight);
       return;
     }
 
     self.content.setTranslateX(amount);
-    self.left && self.left.setTranslateX(amount);
 
     if (amount >= 0) {
       leftShowing = true;
@@ -290,7 +235,6 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
   self.snapToRest = function(e) {
     // We want to animate at the end of this
     self.content.enableAnimation();
-    self.left && self.left.enableAnimation();
     isDragging = false;
 
     // Check how much the panel is open after the drag, and
@@ -359,14 +303,15 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
     self.close();
 
     isAsideExposed = shouldExposeAside;
-    if (self.left && self.left.isEnabled) {
+    if ((self.left && self.left.isEnabled) && (self.right && self.right.isEnabled)) {
+      self.content.setMarginLeftAndRight(isAsideExposed ? self.left.width : 0, isAsideExposed ? self.right.width : 0);
+    } else if (self.left && self.left.isEnabled) {
       // set the left marget width if it should be exposed
       // otherwise set false so there's no left margin
       self.content.setMarginLeft(isAsideExposed ? self.left.width : 0);
     } else if (self.right && self.right.isEnabled) {
       self.content.setMarginRight(isAsideExposed ? self.right.width : 0);
     }
-
     self.$scope.$emit('$ionicExposeAside', isAsideExposed);
   };
 
@@ -376,8 +321,6 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
 
   // End a drag with the given event
   self._endDrag = function(e) {
-    freezeAllScrolls(false);
-
     if (isAsideExposed) return;
 
     if (isDragging) {
@@ -410,20 +353,12 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
       isDragging = true;
       // Initialize dragging
       self.content.disableAnimation();
-      self.left && self.left.disableAnimation();
       offsetX = self.getOpenAmount();
-
-  //      console.log("HANDLE DRAG INIT:");
-
-      menuElem.removeClass('isac-menu-animated');
-
-        //menuElem.removeClass('camera-open-menu');
-        //viewElem.removeClass('camera-open-bg');
     }
 
     if (isDragging) {
       self.openAmount(offsetX + (lastX - startX));
-      freezeAllScrolls(true);
+      //self.content.setCanScroll(false);
     }
   };
 
@@ -462,7 +397,7 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
     var menuEnabled = enableMenuWithBackViews ? true : !backView;
     if (!menuEnabled) {
       var currentView = $ionicHistory.currentView() || {};
-      return backView.historyId !== currentView.historyId;
+      return (dragIsWithinBounds && (backView.historyId !== currentView.historyId));
     }
 
     return ($scope.dragContent || self.isOpen()) &&
@@ -475,16 +410,6 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
   };
 
   $scope.sideMenuContentTranslateX = 0;
-
-  var deregisterBackButtonAction = noop;
-  $scope.sideMenuIsClosed = function() {
-//      console.log("SIDE MENU IS CLOSED");
-      if (!isDragging) {
-          menuElem.addClass('isac-menu-animated');
-          //menuElem.addClass('camera-open-menu');
-          viewElem.addClass('camera-open-bg');
-      }
-  };
 
   var deregisterBackButtonAction = noop;
   var closeSideMenu = angular.bind(self, self.close);
@@ -512,12 +437,10 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
     deregisterBackButtonAction();
     self.$scope = null;
     if (self.content) {
+      self.content.setCanScroll(true);
       self.content.element = null;
       self.content = null;
     }
-
-    // ensure scrolls are unfrozen
-    freezeAllScrolls(false);
   });
 
   self.initialize({
@@ -529,7 +452,4 @@ function($scope, $element, $attrs, $ionicSideMenuDelegate, $ionicPlatform, $ioni
     }
   });
 
-    $rootScope.isSideMenuOpenFunc = function() {
-        return self.getOpenAmount() !== 0 || isDragging;
-    };
 }]);

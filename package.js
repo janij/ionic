@@ -1,7 +1,7 @@
 // package metadata file for Meteor.js
 var packageName = 'driftyco:ionic'; // https://atmospherejs.com/driftyco/ionic
 var where = 'client'; // where to install: 'client' or 'server'. For both, pass nothing.
-var version = '1.1.0';
+var version = '1.2.4';
 
 Package.describe({
   name: packageName,
@@ -24,11 +24,14 @@ Package.onUse(function(api) {
 
   api.addFiles([
     'release/css/ionic.css',
-    'release/fonts/ionicons.eot',
-    'release/fonts/ionicons.svg',
-    'release/fonts/ionicons.ttf',
-    'release/fonts/ionicons.woff',
     'release/js/ionic.js',
     'release/js/ionic-angular.js'
   ], where);
+
+  api.addAssets([
+    'release/fonts/ionicons.eot',
+    'release/fonts/ionicons.svg',
+    'release/fonts/ionicons.ttf',
+    'release/fonts/ionicons.woff'
+  ], where)
 });
